@@ -51,24 +51,30 @@ public class SubwayPop extends BasePopupWindow implements View.OnClickListener {
         setData(list);
     }
 
+    /**
+     * 自行组装数据
+     *
+     * @param stationList
+     */
     private void setData(List<SubwayStationModel> stationList) {
 
         SubwayLineModel line1_1 = new SubwayLineModel();
         line1_1.setName("1号线(下沙江滨)");
         List<SubwayStationModel> line1_1_station = new ArrayList<>();
 
+        // 自行 添加一个全部的选项
         SubwayStationModel line1_1_all = new SubwayStationModel();
         line1_1_all.setSubid(1L);
         line1_1_all.setSubname("全部");
         line1_1_station.add(line1_1_all);
 
         for (SubwayStationModel station : stationList) {
-            if (station.getPsubid() == 1L){
+            if (station.getPsubid() == 1L) {
                 if (!station.getSubname().equals("乔司南") && !station.getSubname().equals("乔司")
                         && !station.getSubname().equals("翁梅")
                         && !station.getSubname().equals("余杭高铁站")
                         && !station.getSubname().equals("南苑")
-                        && !station.getSubname().equals("临平")){
+                        && !station.getSubname().equals("临平")) {
                     line1_1_station.add(station);
                 }
             }
@@ -76,56 +82,62 @@ public class SubwayPop extends BasePopupWindow implements View.OnClickListener {
         line1_1.setList(line1_1_station);
         line1_1.setSelected(true);
 
+
         SubwayLineModel line1_2 = new SubwayLineModel();
         line1_2.setName("1号线(临平)");
         List<SubwayStationModel> line1_2_station = new ArrayList<>();
 
+        // 自行 添加一个全部的选项
         SubwayStationModel line1_2_all = new SubwayStationModel();
         line1_2_all.setSubid(1L);
         line1_2_all.setSubname("全部");
         line1_2_station.add(line1_2_all);
 
         for (SubwayStationModel station : stationList) {
-            if (station.getPsubid() == 1L){
+            if (station.getPsubid() == 1L) {
                 if (!station.getSubname().equals("下沙西") && !station.getSubname().equals("金沙湖")
                         && !station.getSubname().equals("高沙路")
                         && !station.getSubname().equals("文泽路")
                         && !station.getSubname().equals("文海南路")
                         && !station.getSubname().equals("云水")
-                        && !station.getSubname().equals("下沙江滨")){
+                        && !station.getSubname().equals("下沙江滨")) {
                     line1_2_station.add(station);
                 }
             }
         }
         line1_2.setList(line1_2_station);
 
+
         SubwayLineModel line2 = new SubwayLineModel();
         line2.setName("2号线");
         List<SubwayStationModel> line2_station = new ArrayList<>();
 
+        // 自行 添加一个全部的选项
         SubwayStationModel line2_all = new SubwayStationModel();
         line2_all.setSubid(1L);
         line2_all.setSubname("全部");
         line2_station.add(line2_all);
 
         for (SubwayStationModel station : stationList) {
-            if (station.getPsubid() == 2L){
+            if (station.getPsubid() == 2L) {
                 line2_station.add(station);
             }
         }
         line2.setList(line2_station);
 
+
         SubwayLineModel line4 = new SubwayLineModel();
         line4.setName("4号线");
         List<SubwayStationModel> line4_station = new ArrayList<>();
 
+        // 自行 添加一个全部的选项
         SubwayStationModel line4_all = new SubwayStationModel();
         line4_all.setSubid(1L);
         line4_all.setSubname("全部");
         line4_station.add(line4_all);
 
         for (SubwayStationModel station : stationList) {
-            if (station.getPsubid() == 4L){
+            if (station.getPsubid() == 4L) {
                 line4_station.add(station);
             }
         }
@@ -191,7 +203,7 @@ public class SubwayPop extends BasePopupWindow implements View.OnClickListener {
         mBinding.tvCancel.setOnClickListener(this);
         mBinding.tvConfirm.setOnClickListener(this);
     }
-    
+
 
     @Override
     public void onClick(View view) {
@@ -212,7 +224,6 @@ public class SubwayPop extends BasePopupWindow implements View.OnClickListener {
         dismiss();
     }
 
-    
 
     public interface onItemClickListener {
         void onCancelClick();
@@ -220,7 +231,7 @@ public class SubwayPop extends BasePopupWindow implements View.OnClickListener {
         void onConfirmClick(SubwayStationModel station);
     }
 
-        public SubwayPop setItemClickListener(onItemClickListener itemClickListener) {
+    public SubwayPop setItemClickListener(onItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
         return this;
     }

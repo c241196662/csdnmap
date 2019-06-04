@@ -153,7 +153,6 @@ public class CsdnmapActivity extends AppCompatActivity {
     // 是否是第一次进入地图
     private boolean isFirstIn = true;
 
-
     // 是否开启SeekBar滑动监听
     private boolean enableSeekBarListener = true;
     // 是否开启地图状态改变的监听
@@ -175,6 +174,39 @@ public class CsdnmapActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
+        mMapView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
+        mMapView.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (null != mLocationClient) {
+            mLocationClient.stop();
+        }
+
+        if (null != mBaiduMap) {
+            mBaiduMap.setMyLocationEnabled(false);
+        }
+
+        //在activity执行onDestroy时执行mMapView.onDestroy()，实现地图生命周期管理
+        if (null != mMapView) {
+            mMapView.onDestroy();
+            mMapView = null;
+        }
+
+        super.onDestroy();
+    }
+
     private void initView() {
 
         mBinding.flBack.setOnClickListener(view -> {
@@ -183,9 +215,18 @@ public class CsdnmapActivity extends AppCompatActivity {
 
         mBinding.cvLocation.setOnClickListener(view -> {
             if (mCurrentLocation != null) {
+
                 LatLng latLng = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
                 MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.newLatLng(latLng);
                 mBaiduMap.animateMapStatus(mapStatusUpdate, 1000);
+
+                // 清除已绘制的marker
+                clearMarkers();
+
+                drawCircle(mCurrentLocation.getLatitude(),  mCurrentLocation.getLongitude());
+
+                loadCommunity();
+
             }
 
         });
@@ -198,7 +239,7 @@ public class CsdnmapActivity extends AppCompatActivity {
         mBinding.cvList.setOnClickListener(view -> {
             JSONObject jsonObject = new JSONObject();
             try {
-                jsonObject.put("key","value");
+                jsonObject.put("key", "value");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -439,6 +480,7 @@ public class CsdnmapActivity extends AppCompatActivity {
     }
 
     private void setRecyclerAdapter(RecyclerView rv, List<CsdnmapFilterModel> list) {
+
         CsdnmapFilterAdapter csdnmapFilterAdapter = new CsdnmapFilterAdapter(list);
         rv.setAdapter(csdnmapFilterAdapter);
 
@@ -594,14 +636,16 @@ public class CsdnmapActivity extends AppCompatActivity {
     }
 
     /**
-     * Description：给TabLayout添加tab，Tab.setIcon()方法可以给Tab添加图片
+     * 给TabLayout添加tab
      */
-
     private void addTabToTabLayout() {
         mBinding.tlTitle.addTab(mBinding.tlTitle.newTab().setText("租房"));
 
     }
 
+    /**
+     * 初始化地图
+     */
     private void initMap() {
         BaiduMapOptions options = new BaiduMapOptions();
         // 设置地图模式为标准
@@ -621,10 +665,8 @@ public class CsdnmapActivity extends AppCompatActivity {
         startLocation();
 
         // 添加监听器
-        addListener();
+        addMapListener();
 
-        // 默认加载一遍小区
-        loadCommunity();
     }
 
     /**
@@ -703,6 +745,11 @@ public class CsdnmapActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 显示找到的 房源数量
+     *
+     * @param totalCommunityCount
+     */
     private void showTotalCommunityCount(Long totalCommunityCount) {
         if (totalCommunityCount == 0L) {
             return;
@@ -1029,8 +1076,11 @@ public class CsdnmapActivity extends AppCompatActivity {
                 mBaiduMap.setMyLocationData(locData);
 
                 if (isFirstIn) {
-
+                    // 画蓝色圆框框
                     drawCircle(location.getLatitude(), location.getLongitude());
+
+                    // 默认加载一遍小区
+                    loadCommunity();
 
                     isFirstIn = false;
                 }
@@ -1042,7 +1092,10 @@ public class CsdnmapActivity extends AppCompatActivity {
         Log.i("location", "location start");
     }
 
-    private void addListener() {
+    /**
+     * 加载地图监听器
+     */
+    private void addMapListener() {
         BaiduMap.OnMapStatusChangeListener statuschangelistener = new BaiduMap.OnMapStatusChangeListener() {
             /**
              * 手势操作地图，设置地图状态等操作导致地图状态开始改变。
@@ -1219,31 +1272,6 @@ public class CsdnmapActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        //在activity执行onResume时执行mMapView. onResume ()，实现地图生命周期管理
-        mMapView.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        //在activity执行onPause时执行mMapView. onPause ()，实现地图生命周期管理
-        mMapView.onPause();
-    }
-
-    @Override
-    protected void onDestroy() {
-        mLocationClient.stop();
-        mBaiduMap.setMyLocationEnabled(false);
-
-        //在activity执行onDestroy时执行mMapView.onDestroy()，实现地图生命周期管理
-        mMapView.onDestroy();
-        mMapView = null;
-
-        super.onDestroy();
-    }
 
     /**
      * 加载数据任务
@@ -1330,7 +1358,7 @@ public class CsdnmapActivity extends AppCompatActivity {
             } else if (ACTION_LOADSQ.equals(action)) {
                 addSqMarkers(result);
             } else if (ACTION_SEARCH_SUBWAY.equals(action)) {
-                addSubwayStationMarkers(result);
+                moveToSubwayLine(result);
             } else if (ACTION_SEARCH_SUBWAY_STATION.equals(action)) {
                 moveToSubwayStation(result);
             } else if (ACTION_SEARCH_SUBWAY_STATION_COUNT.equals(action)) {
@@ -1428,7 +1456,15 @@ public class CsdnmapActivity extends AppCompatActivity {
         new CsdnmapHttpgetTask(action, url, null).execute(params);
     }
 
-    private void addSubwayStationMarkers(String result) {
+    /**
+     * 添加地铁站气泡
+     *
+     * @param result
+     */
+    private void moveToSubwayLine(String result) {
+
+        double lineCenterStationLat = 0;
+        double lineCenterStationLng = 0;
 
         subwayList.clear();
         try {
@@ -1444,28 +1480,32 @@ public class CsdnmapActivity extends AppCompatActivity {
                 // 根据线路判断要展示的中心站点
                 if (subId == 1L) {
 
-                    if (subwayStationModel.getSubname().equals("打铁关")){
-                        changeMapZoom(Double.parseDouble(subwayStationModel.getPrjy()),
-                                Double.parseDouble(subwayStationModel.getPrjx()), 14f);
+                    if (subwayStationModel.getSubname().equals("打铁关")) {
+                        lineCenterStationLat = Double.parseDouble(subwayStationModel.getPrjy());
+                        lineCenterStationLng = Double.parseDouble(subwayStationModel.getPrjx());
                     }
 
                 } else if (subId == 2L) {
 
-                    if (subwayStationModel.getSubname().equals("建国北路")){
-                        changeMapZoom(Double.parseDouble(subwayStationModel.getPrjy()),
-                                Double.parseDouble(subwayStationModel.getPrjx()), 14f);
+                    if (subwayStationModel.getSubname().equals("建国北路")) {
+                        lineCenterStationLat = Double.parseDouble(subwayStationModel.getPrjy());
+                        lineCenterStationLng = Double.parseDouble(subwayStationModel.getPrjx());
                     }
 
                 } else if (subId == 4L) {
 
-                    if (subwayStationModel.getSubname().equals("近江")){
-                        changeMapZoom(Double.parseDouble(subwayStationModel.getPrjy()),
-                                Double.parseDouble(subwayStationModel.getPrjx()), 14f);
+                    if (subwayStationModel.getSubname().equals("近江")) {
+                        lineCenterStationLat = Double.parseDouble(subwayStationModel.getPrjy());
+                        lineCenterStationLng = Double.parseDouble(subwayStationModel.getPrjx());
                     }
 
                 }
 
             }
+
+            // 搜索地铁线路时，计算该地铁站所有站点1公里范围内的小区房源总数
+            distance = "1";
+            changeMapZoom(lineCenterStationLat, lineCenterStationLng, 14f);
 
             subWayMarkerList.clear();
             for (SubwayStationModel stationModel : subwayList) {
@@ -1531,6 +1571,7 @@ public class CsdnmapActivity extends AppCompatActivity {
             for (SubwayStationModel stationModel : allSubwayList) {
                 if (Objects.equals(stationModel.getSubid(), subId)) {
 
+                    distance = "0.5";
                     changeMapZoom(Double.parseDouble(stationModel.getPrjy()), Double.parseDouble(stationModel.getPrjx()), MAP_SUBWAY_BORDER);
                 }
 
@@ -1543,10 +1584,10 @@ public class CsdnmapActivity extends AppCompatActivity {
     }
 
     /**
-     * 加载城区/商圈列表
+     * 根据地铁站经纬度、范围查询 站点房源数量
      */
     private void getSubwayStationCount(SubwayStationModel stationModel) {
-        String url = "http://jia3.tmsf.com/hzf/esf_communitylist.jspx?distance=1&fanglingzoom=&lat="
+        String url = "http://jia3.tmsf.com/hzf/esf_communitylist.jspx?distance=" + distance + "&fanglingzoom=&lat="
                 + stationModel.getPrjy() + "&lng=" + stationModel.getPrjx()
                 + "&mapfwcxzoom=&maphousetypezoom=&mapjzmjzoom=&mappricezoom=&mapratezoom=&mapszlczoom=&mapzxbzzoom="
                 + "&openid=90886E8949BF9D70247B33D4D1D02488B3256D09&rp=30&uuid=";
@@ -1554,6 +1595,12 @@ public class CsdnmapActivity extends AppCompatActivity {
         new CsdnmapHttpgetTask(ACTION_SEARCH_SUBWAY_STATION_COUNT, url, stationModel.getSubid()).execute(params);
     }
 
+    /**
+     * 遍历地铁站周围房源 计算总房源数量，并添加气泡
+     *
+     * @param result
+     * @param subId
+     */
     private void countSubwayStation(String result, Long subId) {
 
         try {
@@ -1617,7 +1664,7 @@ public class CsdnmapActivity extends AppCompatActivity {
     }
 
     /**
-     * 加载小区列表
+     * 筛选小区列表
      */
     private void filter() {
         String url = "http://m.howzf.com/hzf/esf_communitylist.jspx";
@@ -1649,6 +1696,12 @@ public class CsdnmapActivity extends AppCompatActivity {
         new CsdnmapHttpgetTask(ACTION_LOADCOMMUNITY, url, null).execute(params);
     }
 
+    /**
+     * 组装本地筛选数据
+     *
+     * @param list
+     * @return
+     */
     private String getFilterData(List<CsdnmapFilterModel> list) {
         String data = "";
         for (CsdnmapFilterModel model : list) {
@@ -1663,6 +1716,11 @@ public class CsdnmapActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * 获取自定义填写的筛选价格
+     *
+     * @return
+     */
     private String getCustomPrice() {
         String data = "";
 
@@ -1689,6 +1747,9 @@ public class CsdnmapActivity extends AppCompatActivity {
         return data;
     }
 
+    /**
+     * 点击事件绘图
+     */
     private void drawClickEvent() {
 
         drawCircle(lat, lng);
@@ -1696,6 +1757,12 @@ public class CsdnmapActivity extends AppCompatActivity {
         drawPoint(lat, lng);
     }
 
+    /**
+     * 绘制蓝色圆形框框
+     *
+     * @param latitude
+     * @param longitude
+     */
     private void drawCircle(double latitude, double longitude) {
         if (mCircle != null) {
             mCircle.remove();
@@ -1735,6 +1802,12 @@ public class CsdnmapActivity extends AppCompatActivity {
         changeMapZoom(latitude, longitude, level);
     }
 
+    /**
+     * 绘制图钉
+     *
+     * @param latitude
+     * @param longitude
+     */
     private void drawPoint(double latitude, double longitude) {
         if (mAnchorMarker != null) {
             mAnchorMarker.remove();
@@ -1765,6 +1838,11 @@ public class CsdnmapActivity extends AppCompatActivity {
         new CsdnmapHttpgetTask(action, url, null).execute(params);
     }
 
+    /**
+     * 根据获取的数据加载 显示PopupWindow
+     *
+     * @param result
+     */
     private void showSubwayPop(String result) {
 
         try {
@@ -1802,6 +1880,11 @@ public class CsdnmapActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 地铁找房点击事件
+     *
+     * @param station
+     */
     private void subway(SubwayStationModel station) {
 
         if (station.getSubname().equals("全部")) {
@@ -1822,6 +1905,8 @@ public class CsdnmapActivity extends AppCompatActivity {
     }
 
     /**
+     * 修改坐标和缩放级别
+     *
      * @param latitude
      * @param longitude
      * @param level

@@ -3,21 +3,17 @@ package cordova.plugin.bakaan.csdnmap;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 
@@ -41,12 +37,15 @@ import cordova.plugin.bakaan.csdnmap.adapter.CsdnmapSearchAdapter;
 import cordova.plugin.bakaan.csdnmap.adapter.CsdnmapSearchHistoryAdapter;
 import cordova.plugin.bakaan.csdnmap.model.CsdnmapSearchModel;
 import io.cordova.hellocordova.R;
+import io.cordova.hellocordova.databinding.ActivityCsdnmapSearchBinding;
 
 /**
  * Created by clkj on 2019/6/2.
  */
 
 public class CsdnmapSearchActivity extends AppCompatActivity {
+
+    private ActivityCsdnmapSearchBinding mBinding;
 
     public static final Integer TYPE_AREA = 0;
     public static final Integer TYPE_AREA_CQ = 1;
@@ -56,6 +55,7 @@ public class CsdnmapSearchActivity extends AppCompatActivity {
     public static final Integer TYPE_SUBWAY_STATION = 5;
 
     private static final String SP_NAME = "csdn_search_history";
+    // 搜索历史数据的KEY，现在全局统一，后续可以替换为userId作为索引，实现个人的搜索记录
     private static final String HISTORY_KEY = "csdn_search_history_key";
 
     // 全量查询数据
@@ -64,20 +64,18 @@ public class CsdnmapSearchActivity extends AppCompatActivity {
     // 地铁线数据（用于搜索列表 地铁站描述转译）
     private List<CsdnmapSearchModel> subwayLineList = new ArrayList<>();
 
-    private LinearLayout llHistory;
-
-    private RecyclerView rvSearch;
     private CsdnmapSearchAdapter mCsdnmapSearchAdapter;
     private List<CsdnmapSearchModel> searchList = new ArrayList<>();
 
-    private RecyclerView rvHistory;
     private CsdnmapSearchHistoryAdapter mCsdnmapSearchHistoryAdapter;
     private List<CsdnmapSearchModel> historyList = new ArrayList<>();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_csdnmap_search);
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_csdnmap_search);
 
         initView();
         initAdapter();
@@ -87,20 +85,12 @@ public class CsdnmapSearchActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        rvSearch = findViewById(R.id.rv_search);
-        rvHistory = findViewById(R.id.rv_history);
 
-        llHistory = findViewById(R.id.ll_history);
-        LinearLayout llSearch = findViewById(R.id.ll_search);
-
-        EditText etKeyword = findViewById(R.id.et_keyword);
-
-        ImageView ivDeleteKeyword = findViewById(R.id.iv_delete_keyword);
-        ivDeleteKeyword.setOnClickListener(view -> {
-            etKeyword.setText("");
+        mBinding.ivDeleteKeyword.setOnClickListener(view -> {
+            mBinding.etKeyword.setText("");
         });
 
-        etKeyword.addTextChangedListener(new TextWatcher() {
+        mBinding.etKeyword.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -114,11 +104,11 @@ public class CsdnmapSearchActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (TextUtils.isEmpty(editable.toString())) {
-                    llSearch.setVisibility(View.GONE);
-                    ivDeleteKeyword.setVisibility(View.GONE);
+                    mBinding.llSearch.setVisibility(View.GONE);
+                    mBinding.ivDeleteKeyword.setVisibility(View.GONE);
                 } else {
-                    llSearch.setVisibility(View.VISIBLE);
-                    ivDeleteKeyword.setVisibility(View.VISIBLE);
+                    mBinding.llSearch.setVisibility(View.VISIBLE);
+                    mBinding.ivDeleteKeyword.setVisibility(View.VISIBLE);
                     search(editable.toString());
                 }
 
@@ -126,14 +116,13 @@ public class CsdnmapSearchActivity extends AppCompatActivity {
 
         });
 
-        TextView tvCancel = findViewById(R.id.tv_cancel);
-        tvCancel.setOnClickListener(view -> {
+        mBinding.tvCancel.setOnClickListener(view -> {
             finish();
         });
 
 
-        ImageView ivDeleteHistory = findViewById(R.id.iv_delete_history);
-        ivDeleteHistory.setOnClickListener(view -> {
+        mBinding.ivDeleteHistory.setOnClickListener(view -> {
+            // 清除搜索记录
             SharedPreferences sp = CsdnmapSearchActivity.this.getSharedPreferences(SP_NAME,
                     Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sp.edit();
@@ -142,18 +131,18 @@ public class CsdnmapSearchActivity extends AppCompatActivity {
 
             historyList.clear();
             mCsdnmapSearchHistoryAdapter.notifyDataSetChanged();
-            llHistory.setVisibility(View.GONE);
+            mBinding.llHistory.setVisibility(View.GONE);
         });
 
     }
 
     private void initAdapter() {
 
-        rvSearch.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        ((DefaultItemAnimator) rvSearch.getItemAnimator()).setSupportsChangeAnimations(false);
+        mBinding.rvSearch.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        ((DefaultItemAnimator) mBinding.rvSearch.getItemAnimator()).setSupportsChangeAnimations(false);
 
         mCsdnmapSearchAdapter = new CsdnmapSearchAdapter(searchList, subwayLineList);
-        rvSearch.setAdapter(mCsdnmapSearchAdapter);
+        mBinding.rvSearch.setAdapter(mCsdnmapSearchAdapter);
         mCsdnmapSearchAdapter.setOnItemClickListener((adapter, view, position) -> {
 
             CsdnmapSearchModel model = (CsdnmapSearchModel) adapter.getItem(position);
@@ -163,11 +152,11 @@ public class CsdnmapSearchActivity extends AppCompatActivity {
 
         });
 
-        rvHistory.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        ((DefaultItemAnimator) rvHistory.getItemAnimator()).setSupportsChangeAnimations(false);
+        mBinding.rvHistory.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        ((DefaultItemAnimator) mBinding.rvHistory.getItemAnimator()).setSupportsChangeAnimations(false);
 
         mCsdnmapSearchHistoryAdapter = new CsdnmapSearchHistoryAdapter(historyList);
-        rvHistory.setAdapter(mCsdnmapSearchHistoryAdapter);
+        mBinding.rvHistory.setAdapter(mCsdnmapSearchHistoryAdapter);
         mCsdnmapSearchHistoryAdapter.setOnItemClickListener((adapter, view, position) -> {
 
             CsdnmapSearchModel model = (CsdnmapSearchModel) adapter.getItem(position);
@@ -175,6 +164,9 @@ public class CsdnmapSearchActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * 判断有无历史，添加搜索历史
+     */
     private void initHistory() {
 
         SharedPreferences sp = this.getSharedPreferences(SP_NAME,
@@ -187,7 +179,7 @@ public class CsdnmapSearchActivity extends AppCompatActivity {
 
             if (historyList != null && historyList.size() > 0) {
 
-                llHistory.setVisibility(View.VISIBLE);
+                mBinding.llHistory.setVisibility(View.VISIBLE);
 
                 mCsdnmapSearchHistoryAdapter.notifyDataSetChanged();
             }
@@ -199,6 +191,8 @@ public class CsdnmapSearchActivity extends AppCompatActivity {
     private void showSearch(CsdnmapSearchModel model) {
 
         if (Objects.equals(TYPE_AREA, model.getType())) {
+
+            // 搜索区域时，当搜索结果Pareaid=33时 为 城区，非33是为商圈，直接与地图交互
             if (model.getPareaid()== 33){
                 setResult(TYPE_AREA_CQ, new Intent().putExtra("id", model.getAreaid()));
             }else {
@@ -221,6 +215,7 @@ public class CsdnmapSearchActivity extends AppCompatActivity {
 
         } else if (Objects.equals(TYPE_SUBWAY, model.getType())) {
 
+            // 搜索地铁时，Psubid=0时为 地铁线路，非0则是地铁站，直接于地图交互
             if (model.getPsubid() == 0L){
                 setResult(TYPE_SUBWAY, new Intent().putExtra("id", model.getSubid()));
             }else {
@@ -231,14 +226,18 @@ public class CsdnmapSearchActivity extends AppCompatActivity {
 
         }
 
-
     }
 
+    /**
+     * 点击搜索项时，保存搜索记录
+     * @param model
+     */
     private void addHistory(CsdnmapSearchModel model) {
 
         SharedPreferences sp = this.getSharedPreferences(SP_NAME,
                 Context.MODE_PRIVATE);
 
+        // 搜索记录KEY不存在时则新建，存在则修改
         if (sp.contains(HISTORY_KEY)) {
 
             String historyJson = sp.getString(HISTORY_KEY, "");
@@ -390,6 +389,10 @@ public class CsdnmapSearchActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 自行构建数据
+     * @param result
+     */
     private void initData(String result) {
         try {
             JSONObject json = new JSONObject(result);
