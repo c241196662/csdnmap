@@ -1,7 +1,6 @@
 {
   "name": "cordova-plugin-bakaan-csdnmap",
   "version": "1.0.0",
-  "description": "",
   "cordova": {
     "id": "cordova-plugin-bakaan-csdnmap",
     "platforms": [
@@ -15,5 +14,14 @@
     "cordova-ios"
   ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/c241196662/csdnmap.git"
+  },
+  "bugs": {
+    "url": "https://github.com/c241196662/csdnmap/issues"
+  },
+  "homepage": "https://github.com/c241196662/csdnmap#readme",
+  "description": ""
 }
