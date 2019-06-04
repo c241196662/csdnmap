@@ -1,0 +1,78 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-bakaan-csdnmap" version="1.0.0"
+    xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>csdnmap</name>
+    <js-module name="csdnmap" src="www/csdnmap.js">
+        <clobbers target="csdnmap" />
+    </js-module>
+    <platform name="android">
+        <config-file parent="/*" target="res/xml/config.xml">
+            <feature name="Csdnmap">
+                <param name="android-package" value="cordova.plugin.bakaan.csdnmap.Csdnmap" />
+            </feature>
+        </config-file>
+        <config-file parent="/*" target="AndroidManifest.xml" >
+            <!-- //获取设备网络状态，禁用后无法获取网络状态 -->
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+            <!-- //网络权限，当禁用后，无法进行检索等相关业务 -->
+            <uses-permission android:name="android.permission.INTERNET" />
+            <!-- //读取设备硬件信息，统计数据 -->
+            <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+            <!-- //读取系统信息，包含系统版本等信息，用作统计 -->
+            <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+            <!-- //获取设备的网络状态，鉴权所需网络代理 -->
+            <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+            <!-- //允许sd卡写权限，需写入地图数据，禁用后无法显示地图 -->
+            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+            <!-- //这个权限用于进行网络定位 -->
+            <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+            <!-- //这个权限用于访问GPS定位 -->
+            <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+            <!-- //获取统计数据 -->
+            <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+            <!-- //使用步行AR导航，配置Camera权限 -->
+            <uses-permission android:name="android.permission.CAMERA" />
+            <!-- //程序在手机屏幕关闭后后台进程仍然运行 -->
+            <uses-permission android:name="android.permission.WAKE_LOCK" />
+        </config-file>
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <!-- 定位需要的APP_KEY 根据实际情况修改 -->
+            <meta-data
+                android:name="com.baidu.lbsapi.API_KEY"
+                android:value="7KaY0qZEVCVDGpwVBG5pFGhLhQIu9kac" />
+        </config-file>
+        <source-file src="src/android/Csdnmap.java" target-dir="src/cordova/plugin/bakaan/csdnmap" />
+        <source-file src="src/android/CsdnmapActivity.java" target-dir="src/cordova/plugin/bakaan/csdnmap" />
+        <source-file framework="true" src="src/android/libs/BaiduLBS_Android.jar" target-dir="app/libs" />
+        <source-file framework="true" src="src/android/libs/arm64-v8a/libBaiduMapSDK_base_v5_3_2.so" target-dir="app/libs/arm64-v8a" />
+        <source-file framework="true" src="src/android/libs/arm64-v8a/libBaiduMapSDK_map_v5_3_2.so" target-dir="app/libs/arm64-v8a" />
+        <source-file framework="true" src="src/android/libs/arm64-v8a/liblocSDK7b.so" target-dir="app/libs/arm64-v8a" />
+        <source-file framework="true" src="src/android/libs/armeabi/libBaiduMapSDK_base_v5_3_2.so" target-dir="app/libs/armeabi" />
+        <source-file framework="true" src="src/android/libs/armeabi/libBaiduMapSDK_map_v5_3_2.so" target-dir="app/libs/armeabi" />
+        <source-file framework="true" src="src/android/libs/armeabi/liblocSDK7b.so" target-dir="app/libs/armeabi" />
+        <source-file framework="true" src="src/android/libs/armeabi-v7a/libBaiduMapSDK_base_v5_3_2.so" target-dir="app/libs/armeabi-v7a" />
+        <source-file framework="true" src="src/android/libs/armeabi-v7a/libBaiduMapSDK_map_v5_3_2.so" target-dir="app/libs/armeabi-v7a" />
+        <source-file framework="true" src="src/android/libs/armeabi-v7a/liblocSDK7b.so" target-dir="app/libs/armeabi-v7a" />
+        <source-file framework="true" src="src/android/libs/x86/libBaiduMapSDK_base_v5_3_2.so" target-dir="app/libs/x86" />
+        <source-file framework="true" src="src/android/libs/x86/libBaiduMapSDK_map_v5_3_2.so" target-dir="app/libs/x86" />
+        <source-file framework="true" src="src/android/libs/x86/liblocSDK7b.so" target-dir="app/libs/x86" />
+        <source-file framework="true" src="src/android/libs/x86_64/libBaiduMapSDK_base_v5_3_2.so" target-dir="app/libs/x86_64" />
+        <source-file framework="true" src="src/android/libs/x86_64/libBaiduMapSDK_map_v5_3_2.so" target-dir="app/libs/x86_64" />
+        <source-file framework="true" src="src/android/libs/x86_64/liblocSDK7b.so" target-dir="app/libs/x86_64" />
+        <framework src="android-build.gradle" custom="true" type="gradleReference" />
+
+        <resource-file src="src/android/res/layout/activity_csdnmap.xml" target="res/layout/activity_csdnmap.xml"/>
+        <resource-file src="src/android/res/xml/network_security_config.xml" target="res/xml/network_security_config.xml"/>
+
+        <resource-file src="src/android/res/drawable/csdnmappoint.png" target="res/drawable/csdnmappoint.png"/>
+    </platform>
+    <platform name="ios">
+        <config-file parent="/*" target="config.xml">
+            <feature name="csdnmap">
+                <param name="ios-package" value="csdnmap" />
+            </feature>
+        </config-file>
+        <source-file src="src/ios/csdnmap.m" />
+    </platform>
+</plugin>
