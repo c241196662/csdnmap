@@ -6,10 +6,9 @@ import android.content.Intent;
 import com.baidu.mapapi.CoordType;
 import com.baidu.mapapi.SDKInitializer;
 
+import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaInterface;
 import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CallbackContext;
-
 import org.apache.cordova.CordovaWebView;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,6 +19,13 @@ import org.json.JSONException;
 public class Csdnmap extends CordovaPlugin {
 
     private static Context mContext;
+
+    private static Integer REQUEST_CODE = 1000;
+
+    static final String DATA_FLAG = "data_flag";
+    static final String DATA_TYPE = "data_type";
+    static final String DATA_TYPE_MARKER = "data_type_marker";
+    static final String DATA_TYPE_LIST = "data_type_list";
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
@@ -48,9 +54,45 @@ public class Csdnmap extends CordovaPlugin {
             // 启动地图activity
             Intent intent = new Intent();
             intent.setClass(mContext, CsdnmapActivity.class);
-            cordova.getActivity().startActivity(intent);
+            cordova.startActivityForResult(this, intent, REQUEST_CODE);
         } else {
             callbackContext.error("nmsl!");
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        if (REQUEST_CODE == requestCode) {
+
+            if (null == intent) {
+                return;
+            }
+
+            if (null == intent.getExtras()) {
+                return;
+            }
+
+            if (DATA_TYPE_MARKER.equals(intent.getExtras().get(DATA_TYPE))) {
+
+                // 地图marker点击事件
+                String format = "csdnmap.markerClickCallBack(%s);";
+                String js = String.format(format, intent.getExtras().get(DATA_FLAG));
+                webView.loadUrl("javascript:" + js);
+
+            } else if (DATA_TYPE_LIST.equals(intent.getExtras().get(DATA_TYPE))) {
+
+                // 地图房源列表点击事件
+                String format = "csdnmap.listClickCallBack(%s);";
+                String js = String.format(format, intent.getExtras().get(DATA_FLAG));
+                webView.loadUrl("javascript:" + js);
+
+            }
+
+
+        }
+
+
     }
 }

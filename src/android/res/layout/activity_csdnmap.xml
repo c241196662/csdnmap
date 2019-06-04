@@ -1,9 +1,493 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="cordova.plugin.bakaan.csdnmap.CsdnActivity">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-</android.support.constraint.ConstraintLayout>
+    <data>
+
+    </data>
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/dl_layout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:background="#ffffff"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="45dp">
+
+                <FrameLayout
+                    android:id="@+id/fl_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="left"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="5dp">
+
+                    <ImageView
+                        android:id="@+id/img_back"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/back" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <android.support.design.widget.TabLayout
+                        android:id="@+id/tl_title"
+                        android:layout_gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="45dp"
+                        app:tabIndicatorColor="@color/blue"
+                        app:tabIndicatorHeight="3dp"
+                        app:tabTextColor="@color/blue"
+                        app:tabSelectedTextColor="@color/blue" />
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_gravity="right"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+
+                    <FrameLayout
+                        android:id="@+id/fl_search"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingLeft="10dp"
+                        android:paddingRight="3dp">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/search_tag" />
+
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:id="@+id/fl_filter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:paddingLeft="2dp"
+                        android:paddingRight="10dp">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/filter" />
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </FrameLayout>
+
+            <View
+                android:background="#EBE8EB"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <FrameLayout
+                    android:id="@+id/fl_map"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <LinearLayout
+                    android:id="@+id/ll_count"
+                    android:visibility="gone"
+                    android:background="@color/white"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp">
+
+                    <TextView
+                        android:layout_marginLeft="20dp"
+                        android:text="当前为您寻找到 "
+                        android:gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="45dp" />
+
+                    <TextView
+                        android:id="@+id/tv_count"
+                        android:text="30"
+                        android:gravity="center_vertical"
+                        android:textColor="#fe3824"
+                        android:background="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="45dp" />
+
+                    <TextView
+                        android:text=" 套房源"
+                        android:gravity="center_vertical"
+                        android:background="@color/white"
+                        android:layout_width="match_parent"
+                        android:layout_height="45dp" />
+
+                </LinearLayout>
+
+
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/cv_list"
+                    android:background="#ffffff"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right">
+
+                    <ImageView
+                        android:layout_margin="5dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/list" />
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v7.widget.CardView
+                    android:id="@+id/cv_location"
+                    android:background="#ffffff"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginBottom="80dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|bottom">
+
+                    <ImageView
+                        android:layout_margin="5dp"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/location" />
+
+                </android.support.v7.widget.CardView>
+
+                <LinearLayout
+                    android:layout_gravity="bottom"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/cv_progress"
+                        android:background="#ffffff"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="45dp"
+                        android:layout_gravity="right">
+
+                        <LinearLayout
+                            android:gravity="center_vertical"
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <android.support.v7.widget.AppCompatSeekBar
+                                android:id="@+id/sb_distance"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:max="100"
+                                android:progress="25" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/tv_distance_200"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="0.2km"
+                                    android:textColor="@color/blue"
+                                    android:textSize="@dimen/sp_12" />
+
+                                <TextView
+                                    android:id="@+id/tv_distance_500"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:text="0.5km"
+                                    android:textColor="@color/blue"
+                                    android:textSize="@dimen/sp_12" />
+
+                                <TextView
+                                    android:id="@+id/tv_distance_1000"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:text="1km"
+                                    android:textColor="@color/distance_gray"
+                                    android:textSize="@dimen/sp_12" />
+
+                                <TextView
+                                    android:id="@+id/tv_distance_1500"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:text="1.5km"
+                                    android:textColor="@color/distance_gray"
+                                    android:textSize="@dimen/sp_12" />
+
+                                <TextView
+                                    android:id="@+id/tv_distance_city"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="right"
+                                    android:text="全市"
+                                    android:textColor="@color/distance_gray"
+                                    android:textSize="@dimen/sp_12" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </android.support.v7.widget.CardView>
+
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/cv_subway"
+                        android:background="#ffffff"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="45dp">
+
+                        <LinearLayout
+                            android:gravity="center"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent">
+
+                            <ImageView
+                                android:layout_margin="5dp"
+                                android:layout_width="22dp"
+                                android:layout_height="21dp"
+                                android:layout_gravity="center_vertical"
+                                android:src="@drawable/subway" />
+
+                            <TextView
+                                android:text="地铁找房"
+                                android:textColor="#000000"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"></TextView>
+
+                        </LinearLayout>
+
+
+                    </android.support.v7.widget.CardView>
+
+
+                </LinearLayout>
+
+
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_right_drawer_layout"
+            android:background="@color/white"
+            android:layout_gravity="end"
+            android:layout_width="260dp"
+            android:orientation="vertical"
+            android:layout_height="match_parent">
+
+            <android.support.v4.widget.NestedScrollView
+
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="0dp">
+
+                <LinearLayout
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="价格（元/月）"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_price"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+
+                    </android.support.v7.widget.RecyclerView>
+
+                    <LinearLayout
+                        android:gravity="center_vertical"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="20dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <EditText
+                            android:id="@+id/edt_price_min"
+                            android:gravity="center"
+                            android:hint="最低价格"
+                            android:inputType="number"
+                            android:textSize="14sp"
+                            android:textColorHint="@color/gray"
+                            android:textColor="@color/black"
+                            android:background="@drawable/btn_gray_bg_line"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="30dp" />
+
+                        <View
+                            android:background="@color/gray"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_width="5dp"
+                            android:layout_height="1px" />
+
+                        <EditText
+                            android:id="@+id/edt_price_max"
+                            android:gravity="center"
+                            android:hint="最高价格"
+                            android:maxLength="5"
+                            android:inputType="number"
+                            android:textSize="14sp"
+                            android:textColorHint="@color/gray"
+                            android:textColor="@color/black"
+                            android:background="@drawable/btn_gray_bg_line"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_height="30dp" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="类型选择"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_type"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+
+                    </android.support.v7.widget.RecyclerView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="面积（平方）"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_area"
+                        android:layout_marginTop="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+
+                    </android.support.v7.widget.RecyclerView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:text="品牌"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rv_brand"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+
+                    </android.support.v7.widget.RecyclerView>
+
+                </LinearLayout>
+
+            </android.support.v4.widget.NestedScrollView>
+
+            <View
+                android:background="#ECECEC"
+                android:layout_width="match_parent"
+                android:layout_height="1px" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="60dp">
+
+                <Button
+                    android:id="@+id/btn_clear"
+                    android:text="清空条件"
+                    android:layout_marginLeft="20dp"
+                    android:textColor="@color/black"
+                    android:background="@drawable/btn_gray"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp" />
+
+                <Button
+                    android:id="@+id/btn_confirm"
+                    android:text="确认"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:textColor="@color/white"
+                    android:background="@drawable/btn_blue"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </android.support.v4.widget.DrawerLayout>
+</layout>

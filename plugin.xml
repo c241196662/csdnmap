@@ -7,6 +7,10 @@
         <clobbers target="csdnmap" />
     </js-module>
     <platform name="android">
+        <hook type="after_plugin_add" src="scripts/android-install.js" />
+        <hook type="after_plugin_install" src="scripts/android-install.js" />
+        <hook type="before_plugin_rm" src="scripts/android-install.js" />
+        <hook type="before_plugin_uninstall" src="scripts/android-install.js" />
         <config-file parent="/*" target="res/xml/config.xml">
             <feature name="Csdnmap">
                 <param name="android-package" value="cordova.plugin.bakaan.csdnmap.Csdnmap" />
@@ -37,6 +41,7 @@
             <uses-permission android:name="android.permission.WAKE_LOCK" />
         </config-file>
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
+			<activity android:name="cordova.plugin.bakaan.csdnmap.CsdnmapActivity" />
             <!-- 定位需要的APP_KEY 根据实际情况修改 -->
             <meta-data
                 android:name="com.baidu.lbsapi.API_KEY"
@@ -44,6 +49,20 @@
         </config-file>
         <source-file src="src/android/Csdnmap.java" target-dir="src/cordova/plugin/bakaan/csdnmap" />
         <source-file src="src/android/CsdnmapActivity.java" target-dir="src/cordova/plugin/bakaan/csdnmap" />
+        <source-file src="src/android/CsdnmapSearchActivity.java" target-dir="src/cordova/plugin/bakaan/csdnmap" />
+        <source-file src="src/android/SubwayPop.java" target-dir="src/cordova/plugin/bakaan/csdnmap/popup" />
+        <source-file src="src/android/CsdnmapCQModel.java" target-dir="src/cordova/plugin/bakaan/csdnmap/model" />
+        <source-file src="src/android/CsdnmapFilterModel.java" target-dir="src/cordova/plugin/bakaan/csdnmap/model" />
+        <source-file src="src/android/CsdnmapSearchModel.java" target-dir="src/cordova/plugin/bakaan/csdnmap/model" />
+        <source-file src="src/android/CsdnmapSQModel.java" target-dir="src/cordova/plugin/bakaan/csdnmap/model" />
+        <source-file src="src/android/SubwayLineModel.java" target-dir="src/cordova/plugin/bakaan/csdnmap/model" />
+        <source-file src="src/android/SubwayStationCountModel.java" target-dir="src/cordova/plugin/bakaan/csdnmap/model" />
+        <source-file src="src/android/SubwayStationModel.java" target-dir="src/cordova/plugin/bakaan/csdnmap/model" />
+        <source-file src="src/android/CsdnmapFilterAdapter.java" target-dir="src/cordova/plugin/bakaan/csdnmap/adapter" />
+        <source-file src="src/android/CsdnmapSearchAdapter.java" target-dir="src/cordova/plugin/bakaan/csdnmap/adapter" />
+        <source-file src="src/android/CsdnmapSearchHistoryAdapter.java" target-dir="src/cordova/plugin/bakaan/csdnmap/adapter" />
+        <source-file src="src/android/CsdnmapSubwayLineAdapter.java" target-dir="src/cordova/plugin/bakaan/csdnmap/adapter" />
+        <source-file src="src/android/CsdnmapSubwayStationAdapter.java" target-dir="src/cordova/plugin/bakaan/csdnmap/adapter" />
         <source-file framework="true" src="src/android/libs/BaiduLBS_Android.jar" target-dir="app/libs" />
         <source-file framework="true" src="src/android/libs/arm64-v8a/libBaiduMapSDK_base_v5_3_2.so" target-dir="app/libs/arm64-v8a" />
         <source-file framework="true" src="src/android/libs/arm64-v8a/libBaiduMapSDK_map_v5_3_2.so" target-dir="app/libs/arm64-v8a" />
@@ -63,9 +82,38 @@
         <framework src="android-build.gradle" custom="true" type="gradleReference" />
 
         <resource-file src="src/android/res/layout/activity_csdnmap.xml" target="res/layout/activity_csdnmap.xml"/>
+        <resource-file src="src/android/res/layout/activity_csdnmap_search.xml" target="res/layout/activity_csdnmap_search.xml"/>
+        <resource-file src="src/android/res/layout/layout_csdnmap_filter_item.xml" target="res/layout/layout_csdnmap_filter_item.xml"/>
+        <resource-file src="src/android/res/layout/layout_csdnmap_search.xml" target="res/layout/layout_csdnmap_search.xml"/>
+        <resource-file src="src/android/res/layout/layout_csdnmap_search_history.xml" target="res/layout/layout_csdnmap_search_history.xml"/>
+        <resource-file src="src/android/res/layout/layout_csdnmap_subway_line.xml" target="res/layout/layout_csdnmap_subway_line.xml"/>
+        <resource-file src="src/android/res/layout/pop_subway.xml" target="res/layout/pop_subway.xml"/>
+		
+        <resource-file src="src/android/res/values/colors.xml" target="res/values/colors.xml"/>
+        <resource-file src="src/android/res/values/style.xml" target="res/values/style.xml"/>
+        <resource-file src="src/android/res/values-v21/style.xml" target="res/values-v21/style.xml"/>
+		
         <resource-file src="src/android/res/xml/network_security_config.xml" target="res/xml/network_security_config.xml"/>
 
+        <resource-file src="src/android/res/drawable/back.jpg" target="res/drawable/back.jpg"/>
+        <resource-file src="src/android/res/drawable/btn_blue.xml" target="res/drawable/btn_blue.xml"/>
+        <resource-file src="src/android/res/drawable/btn_gray.xml" target="res/drawable/btn_gray.xml"/>
+        <resource-file src="src/android/res/drawable/btn_gray_bg_line.xml" target="res/drawable/btn_gray_bg_line.xml"/>
+        <resource-file src="src/android/res/drawable/csdnmap_marker1.xml" target="res/drawable/csdnmap_marker1.xml"/>
+        <resource-file src="src/android/res/drawable/csdnmap_marker2.xml" target="res/drawable/csdnmap_marker2.xml"/>
+        <resource-file src="src/android/res/drawable/csdnmapanchormarker.png" target="res/drawable/csdnmapanchormarker.png"/>
         <resource-file src="src/android/res/drawable/csdnmappoint.png" target="res/drawable/csdnmappoint.png"/>
+        <resource-file src="src/android/res/drawable/delete_history.jpg" target="res/drawable/delete_history.jpg"/>
+        <resource-file src="src/android/res/drawable/delete_search.png" target="res/drawable/delete_search.png"/>
+        <resource-file src="src/android/res/drawable/filter.jpg" target="res/drawable/filter.jpg"/>
+        <resource-file src="src/android/res/drawable/history_icon.jpg" target="res/drawable/history_icon.jpg"/>
+        <resource-file src="src/android/res/drawable/list.jpg" target="res/drawable/list.jpg"/>
+        <resource-file src="src/android/res/drawable/location.jpg" target="res/drawable/location.jpg"/>
+        <resource-file src="src/android/res/drawable/msg_time.png" target="res/drawable/msg_time.png"/>
+        <resource-file src="src/android/res/drawable/search.jpg" target="res/drawable/search.jpg"/>
+        <resource-file src="src/android/res/drawable/search_tag.png" target="res/drawable/search_tag.png"/>
+        <resource-file src="src/android/res/drawable/seek_bar_style.xml" target="res/drawable/seek_bar_style.xml"/>
+        <resource-file src="src/android/res/drawable/subway.jpg" target="res/drawable/subway.jpg"/>
     </platform>
     <platform name="ios">
         <config-file parent="/*" target="config.xml">

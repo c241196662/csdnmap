@@ -1,9 +1,22 @@
+allprojects {
+    repositories {
+        google()
+        jcenter()
+
+        maven { url "https://jitpack.io" }
+    }
+}
 repositories {
     jcenter()
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation files('libs/BaiduLBS_Android.jar')
+	
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
+    implementation 'com.github.razerdp:BasePopup:2.2.0'
 }
 
 android {
